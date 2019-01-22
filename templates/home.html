@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<div class='col-md-6'>
+    <h1>欢迎使用LPP</h1>
+    <p>
+        LPP是一个利用LSTM模型来预测未来商品价格的系统，利用历史价格数据作为训练集，预测未来价格。
+    </p>
+    <p>
+        由于单核vps的性能较差，目前只能支持一个商品的预测，欢迎提供更多建议，你可以用这个邮箱联系我：woodsgao@outlook.com。
+    </p>
+    <p>
+        欢迎捐赠，捐赠的资金将会用于服务器的升级。
+    </p>
+    <img src="/static/img/shoukuan.jpg" height="350" width="450">
+</div>
+{% endblock %}

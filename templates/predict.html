@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<!-- 引入 ECharts 文件 -->
+<script src="/static/js/echarts.min.js"></script>
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse">
+                <span class="sr-only">切换导航</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">LPP</a>
+        </div>
+        <div class="collapse navbar-collapse" id="example-navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        Price Prediction<b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% for s in stocks %}
+                        {% if s==stock %}
+                        <li class="active"><a href="/predict/{{ s }}">{{ s|upper }}</a></li>
+                        {% else %}
+                        <li><a href="/predict/{{ s }}">{{ s|upper }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block page_content %}
+<div>
+    <div id="main" class='col-md-12 col-xs-12' style="height:600px;"></div>
+</div>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+
+    // 指定图表的配置项和数据
+    option = {
+        title: {
+            text: '{{ stock|upper }}'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['真实价格', '预测走势']
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: {{ timestamps|safe }}
+        },
+        yAxis: {
+            type: 'value'
+        },
+        dataZoom: [
+            {
+                type: 'slider',
+                show: true,
+                xAxisIndex: [0],
+                start: 40,
+                end: 100
+            },
+            {
+                type: 'inside',
+                xAxisIndex: [0],
+                start: 0,
+                end: 60
+            }
+        ],
+        series: [
+            {
+                name:'预测走势',
+                type:'line',
+                data:{{ pre|safe }}
+            },
+            {
+                name:'真实价格',
+                type:'line',
+                data:{{ now|safe }}
+            }
+        ]
+    };
+    
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+{% endblock %}
